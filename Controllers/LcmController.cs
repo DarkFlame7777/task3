@@ -11,6 +11,12 @@ namespace Task3.Controllers
         [HttpGet]
         public IActionResult CalculateLcm([FromQuery] string x, [FromQuery] string y)
         {
+            x = x?.Trim();
+            y = y?.Trim();
+
+            if (string.IsNullOrEmpty(x) || string.IsNullOrEmpty(y))
+                return Content("NaN", "text/plain");
+
             if (!BigInteger.TryParse(x, out BigInteger xValue) ||
                 !BigInteger.TryParse(y, out BigInteger yValue))
             {
@@ -19,11 +25,15 @@ namespace Task3.Controllers
 
             if (xValue <= 0 || yValue <= 0)
                 return Content("NaN", "text/plain");
-            
-            return Content(CalculateLcm(xValue, yValue).ToString(), "text/plain");
+            BigInteger lcm = SafeCalculateLcm(xValue, yValue);
+            return Content(lcm.ToString(), "text/plain");
         }
 
-        private BigInteger CalculateLcm(BigInteger a, BigInteger b) => BigInteger.Abs(a * b) / Gcd(a, b);
+        private BigInteger SafeCalculateLcm(BigInteger a, BigInteger b)
+        {
+            BigInteger gcd = Gcd(a, b);
+            return BigInteger.Abs(a) * (BigInteger.Abs(b) / gcd);
+        }
 
         private BigInteger Gcd(BigInteger a, BigInteger b)
         {
@@ -33,7 +43,7 @@ namespace Task3.Controllers
                 b = a % b;
                 a = temp;
             }
-            return a;
+            return BigInteger.Abs(a); 
         }
     }
 }
