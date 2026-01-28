@@ -10,7 +10,7 @@ namespace Task3.Controllers
     public class LcmController : ControllerBase
     {
         [HttpGet]
-        public IActionResult CalculateLcm([FromQuery] string x, [FromQuery] string y)
+        public IActionResult CalculateLcm([FromQuery] string? x, [FromQuery] string? y)
         {
             x = x?.Trim();
             y = y?.Trim();
@@ -45,3 +45,4 @@ namespace Task3.Controllers
         }
     }
 }
+
