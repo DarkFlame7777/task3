@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Numerics;
+using System.Text;
 
 namespace Task3.Controllers
 {
@@ -13,26 +14,23 @@ namespace Task3.Controllers
         {
             x = x?.Trim();
             y = y?.Trim();
-
             if (string.IsNullOrEmpty(x) || string.IsNullOrEmpty(y))
-                return Content("NaN", "text/plain");
-
+                return Content("NaN", "text/plain", Encoding.UTF8);
             if (!BigInteger.TryParse(x, out BigInteger xValue) ||
                 !BigInteger.TryParse(y, out BigInteger yValue))
             {
-                return Content("NaN", "text/plain");
+                return Content("NaN", "text/plain", Encoding.UTF8);
             }
-
             if (xValue <= 0 || yValue <= 0)
-                return Content("NaN", "text/plain");
-            BigInteger lcm = SafeCalculateLcm(xValue, yValue);
-            return Content(lcm.ToString(), "text/plain");
+                return Content("NaN", "text/plain", Encoding.UTF8);
+            BigInteger result = CalculateLcmInternal(xValue, yValue);
+            return Content(result.ToString(), "text/plain", Encoding.UTF8);
         }
 
-        private BigInteger SafeCalculateLcm(BigInteger a, BigInteger b)
+        private BigInteger CalculateLcmInternal(BigInteger a, BigInteger b)
         {
             BigInteger gcd = Gcd(a, b);
-            return BigInteger.Abs(a) * (BigInteger.Abs(b) / gcd);
+            return (a / gcd) * b;
         }
 
         private BigInteger Gcd(BigInteger a, BigInteger b)
@@ -43,7 +41,7 @@ namespace Task3.Controllers
                 b = a % b;
                 a = temp;
             }
-            return BigInteger.Abs(a); 
+            return a;
         }
     }
 }
